@@ -1,44 +1,19 @@
 version: 2.1
-orbs:
-  node: circleci/node@4.7
-  
 jobs:
-  build:
-    docker:
-      - image: cimg/node:17.6.0
-
-    working_directory: ~/sumika-stub
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-
-          - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-
-
   deploy:
-    machine:
-      enabled: true
+    docker:
+      - image: cimg/node:16.14.0
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "$FINGERPRINTS"
+            - $FINGERPRINTS
       - run:
           name: Pull code and start api_services
-          command: ssh -oStrictHostKeyChecking=no $AWS_SERVER_USER@$AWS_SERVER_HOSTNAME "cd sumika-stub; git pull origin main; npm install; pm2 reload sumika-stub"
-
+          command: ssh -o StrictHostKeyChecking=no $AWS_SERVER_USER@$AWS_SERVER_HOSTNAME "cd sumika-stub; git pull origin main; npm install; pm2 reload sumika-stub"
 workflows:
   my-flow:
     jobs:
-      - build
       - deploy:
-          requires:
-            - build
           filters:
             branches:
               only:
