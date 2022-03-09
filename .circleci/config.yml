@@ -6,10 +6,10 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - ${FINGERPRINTS}
+            - $FINGERPRINTS
       - run:
           name: Pull code and start api_services
-          command: ssh -o StrictHostKeyChecking=no ${AWS_SERVER_USER}@${AWS_SERVER_HOSTNAME} "cd sumika-stub; git pull origin main; npm install; pm2 reload sumika-stub"
+          command: ssh -o StrictHostKeyChecking=no $AWS_SERVER_USER@$AWS_SERVER_HOSTNAME "cd sumika-stub; git pull origin main; npm install; pm2 reload sumika-stub"
 workflows:
   my-flow:
     jobs:
